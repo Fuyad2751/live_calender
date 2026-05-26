@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="bn" dir="ltr" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ক্রিস্টাল লাইভ ক্যালেন্ডার | ইংরেজি • বাংলা • হিজরি</title>
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Crystal Background Particles -->
+    <div class="crystal-particles" id="crystalParticles"></div>
+    
+    <!-- Main Container -->
+    <div class="main-container">
+        
+        <!-- Theme Toggle & Settings Bar -->
+        <div class="settings-bar glass-card">
+            <div class="brand-logo">
+                <div class="logo-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>ক্রিস্টাল ক্যালেন্ডার</h1>
+                    <span class="logo-subtitle">Crystal Clear Time</span>
+                </div>
+            </div>
+            
+            <div class="settings-controls">
+                <!-- Theme Toggle -->
+                <button class="theme-toggle-btn" id="themeToggle" aria-label="Toggle theme">
+                    <div class="toggle-track">
+                        <i class="fas fa-sun sun-icon"></i>
+                        <i class="fas fa-moon moon-icon"></i>
+                        <div class="toggle-thumb"></div>
+                    </div>
+                </button>
+                
+                <!-- Crystal Effect Toggle -->
+                <button class="crystal-effect-btn" id="crystalEffect" title="ক্রিস্টাল ইফেক্ট">
+                    <i class="fas fa-magic"></i>
+                </button>
+                
+                <!-- Settings Button -->
+                <button class="settings-btn" id="settingsBtn" title="সেটিংস">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Crystal Clock Section -->
+        <div class="crystal-clock-section">
+            <div class="clock-crystal glass-card">
+                <div class="crystal-rings">
+                    <div class="ring ring-1"></div>
+                    <div class="ring ring-2"></div>
+                    <div class="ring ring-3"></div>
+                </div>
+                
+                <div class="clock-content">
+                    <div class="time-display">
+                        <span id="currentHours" class="time-digit">00</span>
+                        <span class="time-separator">:</span>
+                        <span id="currentMinutes" class="time-digit">00</span>
+                        <span class="time-separator">:</span>
+                        <span id="currentSeconds" class="time-digit">00</span>
+                        <span id="ampmIndicator" class="ampm">AM</span>
+                    </div>
+                    
+                    <div class="date-display">
+                        <div class="date-primary">
+                            <span id="currentDayName" class="day-name">মঙ্গলবার</span>
+                        </div>
+                        <div class="date-secondary">
+                            <span id="currentFullDate" class="full-date">২৬ মে ২০২৬</span>
+                        </div>
+                    </div>
+                    
+                    <div class="location-display">
+                        <i class="fas fa-map-marker-alt location-icon"></i>
+                        <span id="displayTimezone" class="timezone-text">Asia/Dhaka</span>
+                        <span id="displayGMTOffset" class="gmt-text">GMT+6:00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Date Info Cards -->
+            <div class="quick-date-cards">
+                <div class="date-card glass-card english-card">
+                    <div class="card-crystal-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>ইংরেজি</h3>
+                        <p id="quickEnglishDate" class="date-value">26 May 2026</p>
+                        <span id="quickEnglishDay" class="day-label">Tuesday</span>
+                    </div>
+                </div>
+                
+                <div class="date-card glass-card bengali-card">
+                    <div class="card-crystal-icon">
+                        <i class="fas fa-feather-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>বাংলা</h3>
+                        <p id="quickBengaliDate" class="date-value">১২ জ্যৈষ্ঠ ১৪৩৩</p>
+                        <span id="quickBengaliSeason" class="day-label">গ্রীষ্মকাল</span>
+                    </div>
+                </div>
+                
+                <div class="date-card glass-card hijri-card">
+                    <div class="card-crystal-icon">
+                        <i class="fas fa-star-and-crescent"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>হিজরি</h3>
+                        <p id="quickHijriDate" class="date-value">২৯ জিলকদ ১৪৪৭</p>
+                        <span id="quickHijriEvent" class="day-label">সাধারণ দিন</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location & Timezone Selector -->
+        <div class="timezone-section glass-card">
+            <div class="section-header">
+                <i class="fas fa-globe-asia"></i>
+                <h3>সময় অঞ্চল নির্বাচন</h3>
+            </div>
+            
+            <div class="timezone-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="timezoneSearch" placeholder="শহর বা টাইমজোন খুঁজুন..." class="glass-input">
+                </div>
+                
+                <select id="timezoneSelect" class="glass-select">
+                    <optgroup label="📍 বাংলাদেশ">
+                        <option value="Asia/Dhaka">🇧🇩 ঢাকা (GMT+6:00)</option>
+                        <option value="Asia/Chittagong">🇧🇩 চট্টগ্রাম (GMT+6:00)</option>
+                    </optgroup>
+                    <optgroup label="🌍 মধ্যপ্রাচ্য">
+                        <option value="Asia/Dubai">🇦🇪 দুবাই (GMT+4:00)</option>
+                        <option value="Asia/Riyadh">🇸🇦 রিয়াদ (GMT+3:00)</option>
+                        <option value="Asia/Doha">🇶🇦 দোহা (GMT+3:00)</option>
+                        <option value="Asia/Kuwait">🇰🇼 কুয়েত (GMT+3:00)</option>
+                    </optgroup>
+                    <optgroup label="🌏 এশিয়া">
+                        <option value="Asia/Kolkata">🇮🇳 কলকাতা (GMT+5:30)</option>
+                        <option value="Asia/Karachi">🇵🇰 করাচি (GMT+5:00)</option>
+                        <option value="Asia/Kuala_Lumpur">🇲🇾 কুয়ালালামপুর (GMT+8:00)</option>
+                        <option value="Asia/Tokyo">🇯🇵 টোকিও (GMT+9:00)</option>
+                    </optgroup>
+                    <optgroup label="🌍 ইউরোপ">
+                        <option value="Europe/London">🇬🇧 লন্ডন (GMT+0:00)</option>
+                        <option value="Europe/Paris">🇫🇷 প্যারিস (GMT+1:00)</option>
+                        <option value="Europe/Berlin">🇩🇪 বার্লিন (GMT+1:00)</option>
+                        <option value="Europe/Moscow">🇷🇺 মস্কো (GMT+3:00)</option>
+                    </optgroup>
+                    <optgroup label="🌎 আমেরিকা">
+                        <option value="America/New_York">🇺🇸 নিউ ইয়র্ক (GMT-5:00)</option>
+                        <option value="America/Chicago">🇺🇸 শিকাগো (GMT-6:00)</option>
+                        <option value="America/Los_Angeles">🇺🇸 লস অ্যাঞ্জেলেস (GMT-8:00)</option>
+                        <option value="America/Toronto">🇨🇦 টরন্টো (GMT-5:00)</option>
+                    </optgroup>
+                    <optgroup label="🌏 ওশেনিয়া">
+                        <option value="Australia/Sydney">🇦🇺 সিডনি (GMT+10:00)</option>
+                        <option value="Pacific/Auckland">🇳🇿 অকল্যান্ড (GMT+12:00)</option>
+                    </optgroup>
+                </select>
+                
+                <button class="detect-location-btn glass-btn" id="detectLocation">
+                    <i class="fas fa-location-crosshairs"></i>
+                    <span>অটো-ডিটেক্ট</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Calendar Tabs -->
+        <div class="calendar-tabs-section">
+            <div class="tab-navigation glass-card">
+                <button class="crystal-tab active" data-calendar="english">
+                    <div class="tab-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="tab-text">
+                        <span class="tab-title">ইংরেজি</span>
+                        <span class="tab-subtitle">Gregorian</span>
+                    </div>
+                    <div class="tab-indicator"></div>
+                </button>
+                
+                <button class="crystal-tab" data-calendar="bengali">
+                    <div class="tab-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="tab-text">
+                        <span class="tab-title">বাংলা</span>
+                        <span class="tab-subtitle">Bengali</span>
+                    </div>
+                    <div class="tab-indicator"></div>
+                </button>
+                
+                <button class="crystal-tab" data-calendar="hijri">
+                    <div class="tab-icon">
+                        <i class="fas fa-mosque"></i>
+                    </div>
+                    <div class="tab-text">
+                        <span class="tab-title">হিজরি</span>
+                        <span class="tab-subtitle">Hijri</span>
+                    </div>
+                    <div class="tab-indicator"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Calendar Display -->
+        <div class="calendar-display-section">
+            <!-- English Calendar -->
+            <div id="englishCalendar" class="calendar-panel glass-card active">
+                <div class="calendar-top-bar">
+                    <button class="nav-crystal-btn" id="engPrevMonth">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="month-year-display">
+                        <h2 id="engMonthYear">মে ২০২৬</h2>
+                        <button class="today-btn" id="engTodayBtn">
+                            <i class="fas fa-dot-circle"></i> আজ
+                        </button>
+                    </div>
+                    <button class="nav-crystal-btn" id="engNextMonth">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="weekday-header">
+                    <span>রবি</span><span>সোম</span><span>মঙ্গল</span>
+                    <span>বুধ</span><span>বৃহঃ</span><span>শুক্র</span><span>শনি</span>
+                </div>
+                
+                <div id="engDaysGrid" class="days-grid crystal-grid"></div>
+            </div>
+            
+            <!-- Bengali Calendar -->
+            <div id="bengaliCalendar" class="calendar-panel glass-card">
+                <div class="calendar-top-bar">
+                    <button class="nav-crystal-btn" id="benPrevMonth">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="month-year-display">
+                        <h2 id="benMonthYear">জ্যৈষ্ঠ ১৪৩৩</h2>
+                        <button class="today-btn" id="benTodayBtn">
+                            <i class="fas fa-dot-circle"></i> আজ
+                        </button>
+                    </div>
+                    <button class="nav-crystal-btn" id="benNextMonth">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="weekday-header">
+                    <span>রবি</span><span>সোম</span><span>মঙ্গল</span>
+                    <span>বুধ</span><span>বৃহঃ</span><span>শুক্র</span><span>শনি</span>
+                </div>
+                
+                <div id="benDaysGrid" class="days-grid crystal-grid"></div>
+            </div>
+            
+            <!-- Hijri Calendar -->
+            <div id="hijriCalendar" class="calendar-panel glass-card">
+                <div class="calendar-top-bar">
+                    <button class="nav-crystal-btn" id="hijPrevMonth">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="month-year-display">
+                        <h2 id="hijMonthYear">জিলকদ ১৪৪৭</h2>
+                        <button class="today-btn" id="hijTodayBtn">
+                            <i class="fas fa-dot-circle"></i> আজ
+                        </button>
+                    </div>
+                    <button class="nav-crystal-btn" id="hijNextMonth">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="weekday-header hijri-weekdays">
+                    <span>আহাদ</span><span>ইছনাইন</span><span>ছুলাছা</span>
+                    <span>আরবিআ</span><span>খামিস</span><span>জুমুআ</span><span>সাবত</span>
+                </div>
+                
+                <div id="hijDaysGrid" class="days-grid crystal-grid"></div>
+            </div>
+        </div>
+
+               <!-- Event & Holiday Section -->
+        <div class="events-section glass-card">
+            <div class="section-header">
+                <i class="fas fa-calendar-star"></i>
+                <h3>আজকের বিশেষ তথ্য</h3>
+            </div>
+            
+            <div class="events-grid">
+                <div class="event-item sunrise-item">
+                    <div class="event-icon">
+                        <i class="fas fa-sun"></i>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">সূর্যোদয়</span>
+                        <span id="sunriseTime" class="event-value">--:--</span>
+                        <span id="sunriseCountdown" class="event-subtext"></span>
+                    </div>
+                </div>
+                
+                <div class="event-item sunset-item">
+                    <div class="event-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">সূর্যাস্ত</span>
+                        <span id="sunsetTime" class="event-value">--:--</span>
+                        <span id="sunsetCountdown" class="event-subtext"></span>
+                    </div>
+                </div>
+                
+                <div class="event-item daytime-item">
+                    <div class="event-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">দিনের দৈর্ঘ্য</span>
+                        <span id="dayLength" class="event-value">--:--</span>
+                        <span id="daylightStatus" class="event-subtext"></span>
+                    </div>
+                </div>
+                
+                <div class="event-item solarnoon-item">
+                    <div class="event-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="event-details">
+                        <span class="event-label">সৌর মধ্যাহ্ন</span>
+                        <span id="solarNoon" class="event-value">--:--</span>
+                        <span id="sunPosition" class="event-subtext"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sun Position Visual -->
+            <div class="sun-position-visual">
+                <div class="sun-path">
+                    <div class="sun-path-track">
+                        <div class="sun-marker" id="sunMarker">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <div class="sunrise-point">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>সূর্যোদয়</span>
+                        </div>
+                        <div class="sunset-point">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>সূর্যাস্ত</span>
+                        </div>
+                    </div>
+                    <div class="sun-path-labels">
+                        <span>৬ AM</span>
+                        <span>১২ PM</span>
+                        <span>৬ PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal glass-card">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> সেটিংস</h2>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="setting-group">
+                    <h4>থিম কাস্টমাইজেশন</h4>
+                    <div class="theme-options">
+                        <button class="theme-option active" data-theme="dark">
+                            <i class="fas fa-moon"></i> ডার্ক ক্রিস্টাল
+                        </button>
+                        <button class="theme-option" data-theme="light">
+                            <i class="fas fa-sun"></i> লাইট ক্রিস্টাল
+                        </button>
+                        <button class="theme-option" data-theme="aurora">
+                            <i class="fas fa-water"></i> অরোরা
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <h4>ক্রিস্টাল ইফেক্ট</h4>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="crystalEffectToggle" checked>
+                        <span class="slider"></span>
+                        <span class="label-text">ক্রিস্টাল গ্লাস ইফেক্ট</span>
+                    </label>
+                    
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="particleEffectToggle" checked>
+                        <span class="slider"></span>
+                        <span class="label-text">পার্টিকেল ইফেক্ট</span>
+                    </label>
+                </div>
+                
+                <div class="setting-group">
+                    <h4>ক্যালেন্ডার সেটিংস</h4>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="weekStartSunday" checked>
+                        <span class="slider"></span>
+                        <span class="label-text">সপ্তাহ শুরু রবিবার</span>
+                    </label>
+                    
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showLunarPhase" checked>
+                        <span class="slider"></span>
+                        <span class="label-text">চন্দ্রকলা দেখান</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="glass-btn save-settings" id="saveSettings">
+                    <i class="fas fa-check"></i> সেভ করুন
+                </button>
+                <button class="glass-btn reset-settings" id="resetSettings">
+                    <i class="fas fa-undo"></i> রিসেট
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/themeManager.js"></script>
+    <script src="js/bengaliCalendar.js"></script>
+    <script src="js/hijriCalendar.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/sunTimes.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

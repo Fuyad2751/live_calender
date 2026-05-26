@@ -1,0 +1,164 @@
+/* ==================== CSS VARIABLES & THEMES ==================== */
+
+/* Dark Crystal Theme (Default) */
+[data-theme="dark"] {
+    /* Primary Colors */
+    --crystal-primary: #6366f1;
+    --crystal-secondary: #8b5cf6;
+    --crystal-accent: #06b6d4;
+    --crystal-highlight: #22d3ee;
+    --crystal-gold: #f59e0b;
+    --crystal-rose: #f43f5e;
+    
+    /* Background Gradients */
+    --bg-primary: #0a0a1a;
+    --bg-secondary: #0f0f2d;
+    --bg-tertiary: #1a1a3e;
+    --bg-surface: rgba(26, 26, 62, 0.6);
+    
+    /* Glass Effect Colors */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+    --glass-highlight: rgba(255, 255, 255, 0.08);
+    
+    /* Text Colors */
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    --text-accent: #818cf8;
+    
+    /* Crystal Effects */
+    --crystal-shine: rgba(255, 255, 255, 0.15);
+    --crystal-gradient-1: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    --crystal-gradient-2: linear-gradient(225deg, rgba(6, 182, 212, 0.2), rgba(34, 211, 238, 0.2));
+    --crystal-gradient-3: linear-gradient(315deg, rgba(245, 158, 11, 0.15), rgba(244, 63, 94, 0.15));
+    
+    /* Calendar Colors */
+    --calendar-bg: rgba(26, 26, 62, 0.4);
+    --calendar-cell-bg: rgba(255, 255, 255, 0.03);
+    --calendar-cell-hover: rgba(99, 102, 241, 0.15);
+    --calendar-today-bg: rgba(99, 102, 241, 0.2);
+    --calendar-today-border: #6366f1;
+    --calendar-other-month: rgba(148, 163, 184, 0.2);
+    --calendar-weekend: #f43f5e;
+    
+    /* Shadow System */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.6);
+    --shadow-crystal: 0 8px 32px rgba(99, 102, 241, 0.2);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --gradient-secondary: linear-gradient(135deg, #06b6d4, #22d3ee);
+    --gradient-accent: linear-gradient(135deg, #f59e0b, #f43f5e);
+    --gradient-bg: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0f0f2d 100%);
+    
+    /* Animation */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* Blur Effects */
+    --blur-sm: 4px;
+    --blur-md: 8px;
+    --blur-lg: 16px;
+    --blur-xl: 24px;
+}
+
+/* Light Crystal Theme */
+[data-theme="light"] {
+    /* Primary Colors */
+    --crystal-primary: #4f46e5;
+    --crystal-secondary: #7c3aed;
+    --crystal-accent: #0891b2;
+    --crystal-highlight: #06b6d4;
+    --crystal-gold: #d97706;
+    --crystal-rose: #e11d48;
+    
+    /* Background Gradients */
+    --bg-primary: #f0f4ff;
+    --bg-secondary: #e8eeff;
+    --bg-tertiary: #dce4ff;
+    --bg-surface: rgba(255, 255, 255, 0.8);
+    
+    /* Glass Effect Colors */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(79, 70, 229, 0.2);
+    --glass-shadow: rgba(79, 70, 229, 0.1);
+    --glass-highlight: rgba(255, 255, 255, 0.9);
+    
+    /* Text Colors */
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-tertiary: #64748b;
+    --text-accent: #4f46e5;
+    
+    /* Crystal Effects */
+    --crystal-shine: rgba(255, 255, 255, 0.8);
+    --crystal-gradient-1: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
+    --crystal-gradient-2: linear-gradient(225deg, rgba(8, 145, 178, 0.1), rgba(6, 182, 212, 0.1));
+    --crystal-gradient-3: linear-gradient(315deg, rgba(217, 119, 6, 0.08), rgba(225, 29, 72, 0.08));
+    
+    /* Calendar Colors */
+    --calendar-bg: rgba(255, 255, 255, 0.6);
+    --calendar-cell-bg: rgba(79, 70, 229, 0.02);
+    --calendar-cell-hover: rgba(79, 70, 229, 0.08);
+    --calendar-today-bg: rgba(79, 70, 229, 0.1);
+    --calendar-today-border: #4f46e5;
+    --calendar-other-month: rgba(100, 116, 139, 0.2);
+    --calendar-weekend: #e11d48;
+    
+    /* Shadow System */
+    --shadow-sm: 0 2px 8px rgba(79, 70, 229, 0.1);
+    --shadow-md: 0 4px 20px rgba(79, 70, 229, 0.15);
+    --shadow-lg: 0 8px 40px rgba(79, 70, 229, 0.2);
+    --shadow-xl: 0 20px 60px rgba(79, 70, 229, 0.25);
+    --shadow-crystal: 0 8px 32px rgba(79, 70, 229, 0.15);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #4f46e5, #7c3aed);
+    --gradient-secondary: linear-gradient(135deg, #0891b2, #06b6d4);
+    --gradient-accent: linear-gradient(135deg, #d97706, #e11d48);
+    --gradient-bg: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 50%, #f0f4ff 100%);
+    
+    /* Blur Effects */
+    --blur-sm: 2px;
+    --blur-md: 4px;
+    --blur-lg: 8px;
+    --blur-xl: 12px;
+}
+
+/* Aurora Theme */
+[data-theme="aurora"] {
+    --crystal-primary: #00b4d8;
+    --crystal-secondary: #0077b6;
+    --crystal-accent: #90e0ef;
+    --crystal-highlight: #caf0f8;
+    --crystal-gold: #f77f00;
+    --crystal-rose: #d62828;
+    
+    --bg-primary: #03045e;
+    --bg-secondary: #023e8a;
+    --bg-tertiary: #0077b6;
+    --bg-surface: rgba(3, 4, 94, 0.8);
+    
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(144, 224, 239, 0.3);
+    --glass-shadow: rgba(0, 180, 216, 0.2);
+    --glass-highlight: rgba(202, 240, 248, 0.1);
+    
+    --text-primary: #caf0f8;
+    --text-secondary: #90e0ef;
+    --text-tertiary: #48cae4;
+    --text-accent: #00b4d8;
+    
+    --calendar-today-bg: rgba(0, 180, 216, 0.3);
+    --calendar-today-border: #00b4d8;
+    --calendar-weekend: #d62828;
+    
+    --shadow-crystal: 0 8px 32px rgba(0, 180, 216, 0.3);
+    --gradient-bg: linear-gradient(135deg, #03045e 0%, #023e8a 50%, #0077b6 100%);
+}
