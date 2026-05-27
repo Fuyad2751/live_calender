@@ -7,14 +7,6 @@ var ThemeManager = function() {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
     };
-    
-    document.getElementById('settingsBtn').onclick = function() {
-        var themes = ['dark', 'light', 'aurora'];
-        var current = themes.indexOf(theme);
-        theme = themes[(current + 1) % themes.length];
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    };
 };
 
 new ThemeManager();
