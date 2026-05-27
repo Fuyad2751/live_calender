@@ -154,47 +154,80 @@ class CalendarManager {
         daysGrid.innerHTML = html;
     }
     
-    renderHijriCalendar(year, month, timezone = null) {
-        const daysGrid = document.getElementById('hijDaysGrid');
-        const monthYearTitle = document.getElementById('hijMonthYear');
-        
-        // Check if elements exist
-        if (!daysGrid || !monthYearTitle) {
-            console.warn('Hijri calendar elements not found in DOM');
-            return;
-        }
-        
-        const today = new Date();
-        const hijriDate = this.hijriCalendar.gregorianToHijri(today);
-        
-        monthYearTitle.textContent = `${this.hijriCalendar.hijriMonths[month - 1]} ${year} হি.`;
-        
-        // Hijri months alternate between 29 and 30 days
-        const daysInMonth = month % 2 === 0 ? 29 : 30;
-        
-        let html = '';
-        
-        for (let day = 1; day <= daysInMonth; day++) {
-            const isToday = hijriDate.day === day && 
-                           hijriDate.month === month &&
-                           hijriDate.year === year;
-            
-            let classes = 'day-cell hijri-date';
-            if (isToday) classes += ' today';
-            
-            // Check for important Islamic dates
-            const importantDate = this.hijriCalendar.isImportantDate(month, day);
-            const tooltip = importantDate ? ` title="${importantDate}"` : '';
-            
-            html += `<div class="${classes}"${tooltip}>
-                <span class="day-number">${day}</span>
-                ${importantDate ? '<span class="important-dot" title="' + importantDate + '">•</span>' : ''}
-                ${isToday ? '<span class="today-dot"></span>' : ''}
-            </div>`;
-        }
-        
-        daysGrid.innerHTML = html;
+   renderHijriCalendar(year, month, timezone = null) {
+    const daysGrid = document.getElementById('hijDaysGrid');
+    const monthYearTitle = document.getElementById('hijMonthYear');
+    
+    // Check if elements exist
+    if (!daysGrid || !monthYearTitle) {
+        console.warn('Hijri calendar elements not found in DOM');
+        return;
     }
+    
+    const today = new Date();
+    
+    // Get accurate Hijri date
+    const hijriDate = this.hijriCalendar.gregorianToHijri(today);
+    
+    // Update title with current displayed month/year
+    monthYearTitle.textContent = `${this.hijriCalendar.hijriMonths[month - 1]} ${year} হি.`;
+    
+    // Get correct month length
+    const daysInMonth = this.hijriCalendar.getHijriMonthLength(month, year);
+    
+    let html = '';
+    
+    // Calculate first day of the month (simplified)
+    // For a more accurate first day calculation, we would need to know the weekday of 1st of the month
+    const firstDayOfMonth = this.getHijriFirstDayOfWeek(year, month);
+    
+    // Add empty cells for start of month
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        html += `<div class="day-cell other-month"><span class="day-number">•</span></div>`;
+    }
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = hijriDate.day === day && 
+                       hijriDate.month === month &&
+                       hijriDate.year === year;
+        
+        let classes = 'day-cell hijri-date';
+        if (isToday) classes += ' today';
+        
+        // Check for important Islamic dates
+        const importantDate = this.hijriCalendar.isImportantDate(month, day);
+        const tooltip = importantDate ? ` title="${importantDate}"` : '';
+        
+        html += `<div class="${classes}"${tooltip}>
+            <span class="day-number">${day}</span>
+            ${importantDate ? '<span class="important-dot" title="' + importantDate + '">•</span>' : ''}
+            ${isToday ? '<span class="today-dot"></span>' : ''}
+        </div>`;
+    }
+    
+    daysGrid.innerHTML = html;
+}
+
+// Helper method to get the first day of week for a Hijri month
+getHijriFirstDayOfWeek(year, month) {
+    // This is a simplified calculation
+    // For accurate results, we would need to calculate the exact Julian day
+    const today = new Date();
+    const hijriDate = this.hijriCalendar.gregorianToHijri(today);
+    
+    // Calculate difference between current month and displayed month
+    const monthDiff = (year - hijriDate.year) * 12 + (month - hijriDate.month);
+    const approximateDays = monthDiff * 29.5;
+    
+    // Get weekday of today
+    const todayWeekday = today.getDay();
+    
+    // Calculate first day of displayed month
+    const firstDay = (todayWeekday - (hijriDate.day - 1) + approximateDays) % 7;
+    
+    // Ensure positive value
+    return ((firstDay % 7) + 7) % 7;
+}
     
     addDayCellEvents(gridElement) {
         const dayCells = gridElement.querySelectorAll('.day-cell:not(.other-month)');
