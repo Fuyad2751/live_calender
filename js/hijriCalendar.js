@@ -2,27 +2,37 @@ class HijriCalendar {
     constructor() {
         this.hijriMonths = ['মুহাররম', 'সফর', 'রবিউল আউয়াল', 'রবিউস সানি', 'জমাদিউল আউয়াল', 'জমাদিউস সানি', 'রজব', 'শাবান', 'রমজান', 'শাওয়াল', 'জিলকদ', 'জিলহজ্জ'];
         this.hijriWeekdays = ['আহাদ', 'ইছনাইন', 'ছুলাছা', 'আরবিআ', 'খামিস', 'জুমুআ', 'সাবত'];
-        this.importantDates = {
-            '1': { '10': 'আশুরা' },
-            '3': { '12': 'ঈদে মিলাদুন্নবী (সা.)' },
-            '7': { '27': 'শবে মেরাজ' },
-            '8': { '15': 'শবে বরাত' },
-            '9': { '1': 'রমজান শুরু', '27': 'শবে কদর' },
-            '10': { '1': 'ঈদুল ফিতর' },
-            '12': { '9': 'আরাফাত দিবস', '10': 'ঈদুল আজহা' }
-        };
     }
     
-    gregorianToHijri(gregorianDate) {
-        try {
-            var gDate = new Date(gregorianDate);
-            if (isNaN(gDate.getTime())) {
-                throw new Error('Invalid date');
-            }
-            return this.accurateConversion(gDate);
-        } catch (e) {
-            return this.fallbackHijriConversion(gregorianDate);
-        }
+    gregorianToHijri(date) {
+        var d = new Date(date);
+        if (isNaN(d.getTime())) return { year: 1447, month: 11, day: 10, monthName: 'জিলকদ', weekday: 'আরবিআ' };
+        
+        var jd = this.gregorianToJulianDay(d.getFullYear(), d.getMonth() + 1, d.getDate());
+        var l = jd - 1948440 + 10632;
+        var n = Math.floor((l - 1) / 10631);
+        var l2 = l - 10631 * n + 354;
+        var j = Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) + Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238);
+        var l3 = l2 - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+        
+        var month = Math.floor((24 * l3) / 709);
+        var day = l3 - Math.floor((709 * month) / 24);
+        var year = 30 * n + j - 30;
+        
+        if (month < 1) { month = 12; year--; }
+        if (month > 12) { month = 1; year++; }
+        
+        var maxDay = this.getHijriMonthLength(month, year);
+        if (day > maxDay) day = maxDay;
+        if (day < 1) day = 1;
+        
+        return {
+            year: year,
+            month: month,
+            day: day,
+            monthName: this.hijriMonths[month - 1],
+            weekday: this.hijriWeekdays[d.getDay()]
+        };
     }
     
     gregorianToJulianDay(year, month, day) {
@@ -44,94 +54,10 @@ class HijriCalendar {
         return leapYears.indexOf(y) !== -1;
     }
     
-    fallbackHijriConversion(gregorianDate) {
-        var date = new Date(gregorianDate);
-        var refDate = new Date(622, 6, 16);
-        var diffDays = Math.floor((date.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
-        
-        if (diffDays < 0) {
-            return { year: 1, month: 1, day: 1, monthName: this.hijriMonths[0], weekday: this.hijriWeekdays[date.getDay()] };
-        }
-        
-        var hijriYear = Math.floor(diffDays / 354.367) + 1;
-        var remaining = Math.ceil(diffDays - Math.floor((hijriYear - 1) * 354.367));
-        var month = 1;
-        var monthDays = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
-        
-        for (var i = 0; i < 12; i++) {
-            if (remaining <= monthDays[i]) { month = i + 1; break; }
-            remaining -= monthDays[i];
-        }
-        
-        return {
-            year: hijriYear,
-            month: month,
-            day: Math.max(1, Math.min(remaining, 30)),
-            monthName: this.hijriMonths[month - 1],
-            weekday: this.hijriWeekdays[date.getDay()]
-        };
-    }
-    
-    getKnownReferenceDates() {
-        return [
-            { g: [2024, 1, 1], h: [1445, 6, 19] },
-            { g: [2024, 3, 11], h: [1445, 9, 1] },
-            { g: [2024, 4, 10], h: [1445, 10, 1] },
-            { g: [2025, 1, 1], h: [1446, 7, 1] },
-            { g: [2026, 5, 27], h: [1447, 11, 10] }
-        ];
-    }
-    
-    accurateConversion(date) {
-        var refs = this.getKnownReferenceDates();
-        var gDate = new Date(date);
-        var best = refs[0];
-        var bestDiff = Infinity;
-        
-        for (var i = 0; i < refs.length; i++) {
-            var rd = new Date(refs[i].g[0], refs[i].g[1] - 1, refs[i].g[2]);
-            var diff = gDate.getTime() - rd.getTime();
-            if (diff >= 0 && diff < bestDiff) {
-                bestDiff = diff;
-                best = refs[i];
-            }
-        }
-        
-        var refDate = new Date(best.g[0], best.g[1] - 1, best.g[2]);
-        var diffDays = Math.floor((gDate.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
-        
-        var hYear = best.h[0];
-        var hMonth = best.h[1];
-        var hDay = best.h[2];
-        
-        for (var i = 0; i < diffDays; i++) {
-            hDay++;
-            var maxDay = this.getHijriMonthLength(hMonth, hYear);
-            if (hDay > maxDay) {
-                hDay = 1;
-                hMonth++;
-                if (hMonth > 12) { hMonth = 1; hYear++; }
-            }
-        }
-        
-        return {
-            year: hYear,
-            month: hMonth,
-            day: hDay,
-            monthName: this.hijriMonths[hMonth - 1],
-            weekday: this.hijriWeekdays[gDate.getDay()]
-        };
-    }
-    
     adjustDate(originalDate, adjustmentDays) {
         if (adjustmentDays === 0) return originalDate;
-        var adj = {
-            year: originalDate.year,
-            month: originalDate.month,
-            day: originalDate.day,
-            monthName: originalDate.monthName,
-            weekday: originalDate.weekday
-        };
+        
+        var adj = { year: originalDate.year, month: originalDate.month, day: originalDate.day, monthName: originalDate.monthName, weekday: originalDate.weekday };
         var total = adj.day + adjustmentDays;
         
         while (total > this.getHijriMonthLength(adj.month, adj.year)) {
@@ -139,22 +65,31 @@ class HijriCalendar {
             adj.month++;
             if (adj.month > 12) { adj.month = 1; adj.year++; }
         }
+        
         while (total < 1) {
             adj.month--;
             if (adj.month < 1) { adj.month = 12; adj.year--; }
             total += this.getHijriMonthLength(adj.month, adj.year);
         }
+        
         adj.day = total;
         adj.monthName = this.hijriMonths[adj.month - 1];
         return adj;
     }
     
     isImportantDate(month, day) {
-        var mk = month.toString();
-        var dk = day.toString();
-        if (this.importantDates[mk] && this.importantDates[mk][dk]) {
-            return this.importantDates[mk][dk];
-        }
+        var dates = {
+            '1': { '10': 'আশুরা' },
+            '3': { '12': 'ঈদে মিলাদুন্নবী' },
+            '9': { '1': 'রমজান শুরু', '27': 'শবে কদর' },
+            '10': { '1': 'ঈদুল ফিতর' },
+            '12': { '9': 'আরাফাত দিবস', '10': 'ঈদুল আজহা' }
+        };
+        
+        var m = month.toString();
+        var d = day.toString();
+        
+        if (dates[m] && dates[m][d]) return dates[m][d];
         return null;
     }
     
@@ -162,8 +97,4 @@ class HijriCalendar {
         if (!hijriDate) return 'N/A';
         return hijriDate.day + ' ' + hijriDate.monthName + ' ' + hijriDate.year + ' হি.';
     }
-}
-
-if (typeof window !== 'undefined') {
-    window.hijriCalendar = new HijriCalendar();
 }
