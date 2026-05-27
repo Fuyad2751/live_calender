@@ -1,0 +1,13 @@
+{
+  "name": "ক্রিস্টাল লাইভ ক্যালেন্ডার",
+  "short_name": "ক্রিস্টাল ক্যালেন্ডার",
+  "start_url": "/live_calender/",
+  "display": "standalone",
+  "background_color": "#0a0a1a",
+  "theme_color": "#6366f1",
+  "icons": [
+    { "src": "icons/icon-72x72.png", "sizes": "72x72", "type": "image/png" },
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
