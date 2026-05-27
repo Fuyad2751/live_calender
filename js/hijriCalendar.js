@@ -1,17 +1,7 @@
-// Hijri Calendar Converter
 class HijriCalendar {
     constructor() {
-        this.hijriMonths = [
-            'মুহাররম', 'সফর', 'রবিউল আউয়াল', 'রবিউস সানি',
-            'জমাদিউল আউয়াল', 'জমাদিউস সানি', 'রজব', 'শাবান',
-            'রমজান', 'শাওয়াল', 'জিলকদ', 'জিলহজ্জ'
-        ];
-        
-        this.hijriWeekdays = [
-            'আহাদ', 'ইছনাইন', 'ছুলাছা', 'আরবিআ',
-            'খামিস', 'জুমুআ', 'সাবত'
-        ];
-        
+        this.hijriMonths = ['মুহাররম', 'সফর', 'রবিউল আউয়াল', 'রবিউস সানি', 'জমাদিউল আউয়াল', 'জমাদিউস সানি', 'রজব', 'শাবান', 'রমজান', 'শাওয়াল', 'জিলকদ', 'জিলহজ্জ'];
+        this.hijriWeekdays = ['আহাদ', 'ইছনাইন', 'ছুলাছা', 'আরবিআ', 'খামিস', 'জুমুআ', 'সাবত'];
         this.importantDates = {
             '1': { '10': 'আশুরা' },
             '3': { '12': 'ঈদে মিলাদুন্নবী (সা.)' },
@@ -25,65 +15,58 @@ class HijriCalendar {
     
     gregorianToHijri(gregorianDate) {
         try {
-            const gDate = new Date(gregorianDate);
+            var gDate = new Date(gregorianDate);
             if (isNaN(gDate.getTime())) {
                 throw new Error('Invalid date');
             }
             return this.accurateConversion(gDate);
-        } catch (error) {
-            console.error('Hijri conversion error:', error);
+        } catch (e) {
             return this.fallbackHijriConversion(gregorianDate);
         }
     }
     
     gregorianToJulianDay(year, month, day) {
-        let a = Math.floor((14 - month) / 12);
-        let y = year + 4800 - a;
-        let m = month + 12 * a - 3;
+        var a = Math.floor((14 - month) / 12);
+        var y = year + 4800 - a;
+        var m = month + 12 * a - 3;
         return day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
     }
     
     getHijriMonthLength(month, year) {
-        const basePattern = month % 2 === 1 ? 30 : 29;
-        if (month === 12 && this.isHijriLeapYear(year)) {
-            return 30;
-        }
-        return basePattern;
+        if (month === 12 && this.isHijriLeapYear(year)) return 30;
+        return month % 2 === 1 ? 30 : 29;
     }
     
     isHijriLeapYear(year) {
-        const leapYearsInCycle = [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29];
-        const yearInCycle = year % 30;
-        return leapYearsInCycle.includes(yearInCycle === 0 ? 30 : yearInCycle);
+        var leapYears = [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29];
+        var y = year % 30;
+        if (y === 0) y = 30;
+        return leapYears.indexOf(y) !== -1;
     }
     
     fallbackHijriConversion(gregorianDate) {
-        const date = new Date(gregorianDate);
-        const referenceDate = new Date(622, 6, 16);
-        const diffTime = date.getTime() - referenceDate.getTime();
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        var date = new Date(gregorianDate);
+        var refDate = new Date(622, 6, 16);
+        var diffDays = Math.floor((date.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
         
         if (diffDays < 0) {
             return { year: 1, month: 1, day: 1, monthName: this.hijriMonths[0], weekday: this.hijriWeekdays[date.getDay()] };
         }
         
-        const hijriYear = Math.floor(diffDays / 354.367) + 1;
-        let dayOfYear = Math.ceil(diffDays - Math.floor((hijriYear - 1) * 354.367));
-        let month = 1;
-        const monthLengths = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
+        var hijriYear = Math.floor(diffDays / 354.367) + 1;
+        var remaining = Math.ceil(diffDays - Math.floor((hijriYear - 1) * 354.367));
+        var month = 1;
+        var monthDays = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29];
         
-        for (let i = 0; i < 12; i++) {
-            if (dayOfYear <= monthLengths[i]) {
-                month = i + 1;
-                break;
-            }
-            dayOfYear -= monthLengths[i];
+        for (var i = 0; i < 12; i++) {
+            if (remaining <= monthDays[i]) { month = i + 1; break; }
+            remaining -= monthDays[i];
         }
         
         return {
             year: hijriYear,
             month: month,
-            day: Math.max(1, Math.min(Math.ceil(dayOfYear), 30)),
+            day: Math.max(1, Math.min(remaining, 30)),
             monthName: this.hijriMonths[month - 1],
             weekday: this.hijriWeekdays[date.getDay()]
         };
@@ -91,49 +74,43 @@ class HijriCalendar {
     
     getKnownReferenceDates() {
         return [
-            { gregorian: [2024, 1, 1], hijri: [1445, 6, 19] },
-            { gregorian: [2024, 3, 11], hijri: [1445, 9, 1] },
-            { gregorian: [2024, 4, 10], hijri: [1445, 10, 1] },
-            { gregorian: [2024, 6, 17], hijri: [1445, 12, 10] },
-            { gregorian: [2025, 1, 1], hijri: [1446, 7, 1] },
-            { gregorian: [2026, 5, 27], hijri: [1447, 11, 9] },
-            { gregorian: [2026, 6, 17], hijri: [1447, 12, 1] }
+            { g: [2024, 1, 1], h: [1445, 6, 19] },
+            { g: [2024, 3, 11], h: [1445, 9, 1] },
+            { g: [2024, 4, 10], h: [1445, 10, 1] },
+            { g: [2025, 1, 1], h: [1446, 7, 1] },
+            { g: [2026, 5, 27], h: [1447, 11, 10] }
         ];
     }
     
     accurateConversion(date) {
-        const references = this.getKnownReferenceDates();
-        const gDate = new Date(date);
+        var refs = this.getKnownReferenceDates();
+        var gDate = new Date(date);
+        var best = refs[0];
+        var bestDiff = Infinity;
         
-        let closestRef = references[0];
-        let closestDiff = Infinity;
-        
-        for (const ref of references) {
-            const refDate = new Date(ref.gregorian[0], ref.gregorian[1] - 1, ref.gregorian[2]);
-            const diff = gDate.getTime() - refDate.getTime();
-            if (diff >= 0 && diff < closestDiff) {
-                closestDiff = diff;
-                closestRef = ref;
+        for (var i = 0; i < refs.length; i++) {
+            var rd = new Date(refs[i].g[0], refs[i].g[1] - 1, refs[i].g[2]);
+            var diff = gDate.getTime() - rd.getTime();
+            if (diff >= 0 && diff < bestDiff) {
+                bestDiff = diff;
+                best = refs[i];
             }
         }
         
-        const refDate = new Date(closestRef.gregorian[0], closestRef.gregorian[1] - 1, closestRef.gregorian[2]);
-        const diffDays = Math.floor((gDate.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
+        var refDate = new Date(best.g[0], best.g[1] - 1, best.g[2]);
+        var diffDays = Math.floor((gDate.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
         
-        let hYear = closestRef.hijri[0];
-        let hMonth = closestRef.hijri[1];
-        let hDay = closestRef.hijri[2];
+        var hYear = best.h[0];
+        var hMonth = best.h[1];
+        var hDay = best.h[2];
         
-        for (let i = 0; i < diffDays; i++) {
+        for (var i = 0; i < diffDays; i++) {
             hDay++;
-            const maxDay = this.getHijriMonthLength(hMonth, hYear);
+            var maxDay = this.getHijriMonthLength(hMonth, hYear);
             if (hDay > maxDay) {
                 hDay = 1;
                 hMonth++;
-                if (hMonth > 12) {
-                    hMonth = 1;
-                    hYear++;
-                }
+                if (hMonth > 12) { hMonth = 1; hYear++; }
             }
         }
         
@@ -148,51 +125,45 @@ class HijriCalendar {
     
     adjustDate(originalDate, adjustmentDays) {
         if (adjustmentDays === 0) return originalDate;
+        var adj = {
+            year: originalDate.year,
+            month: originalDate.month,
+            day: originalDate.day,
+            monthName: originalDate.monthName,
+            weekday: originalDate.weekday
+        };
+        var total = adj.day + adjustmentDays;
         
-        const adjusted = { ...originalDate };
-        let totalDays = adjusted.day + adjustmentDays;
-        
-        while (totalDays > this.getHijriMonthLength(adjusted.month, adjusted.year)) {
-            totalDays -= this.getHijriMonthLength(adjusted.month, adjusted.year);
-            adjusted.month++;
-            if (adjusted.month > 12) {
-                adjusted.month = 1;
-                adjusted.year++;
-            }
+        while (total > this.getHijriMonthLength(adj.month, adj.year)) {
+            total -= this.getHijriMonthLength(adj.month, adj.year);
+            adj.month++;
+            if (adj.month > 12) { adj.month = 1; adj.year++; }
         }
-        
-        while (totalDays < 1) {
-            adjusted.month--;
-            if (adjusted.month < 1) {
-                adjusted.month = 12;
-                adjusted.year--;
-            }
-            totalDays += this.getHijriMonthLength(adjusted.month, adjusted.year);
+        while (total < 1) {
+            adj.month--;
+            if (adj.month < 1) { adj.month = 12; adj.year--; }
+            total += this.getHijriMonthLength(adj.month, adj.year);
         }
-        
-        adjusted.day = totalDays;
-        adjusted.monthName = this.hijriMonths[adjusted.month - 1];
-        
-        return adjusted;
+        adj.day = total;
+        adj.monthName = this.hijriMonths[adj.month - 1];
+        return adj;
     }
     
     isImportantDate(month, day) {
-        const monthKey = month.toString();
-        const dayKey = day.toString();
-        if (this.importantDates[monthKey] && this.importantDates[monthKey][dayKey]) {
-            return this.importantDates[monthKey][dayKey];
+        var mk = month.toString();
+        var dk = day.toString();
+        if (this.importantDates[mk] && this.importantDates[mk][dk]) {
+            return this.importantDates[mk][dk];
         }
         return null;
     }
     
     formatHijriDate(hijriDate) {
-        if (!hijriDate) return 'তারিখ পাওয়া যায়নি';
-        return `${hijriDate.day} ${hijriDate.monthName} ${hijriDate.year} হি.`;
+        if (!hijriDate) return 'N/A';
+        return hijriDate.day + ' ' + hijriDate.monthName + ' ' + hijriDate.year + ' হি.';
     }
 }
 
-// Initialize global
 if (typeof window !== 'undefined') {
     window.hijriCalendar = new HijriCalendar();
-    console.log('🕌 Hijri Calendar loaded!');
 }
