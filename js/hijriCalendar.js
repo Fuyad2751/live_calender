@@ -279,3 +279,34 @@ if (typeof window !== 'undefined') {
     // Auto-test on load
     console.log('🕌 Hijri Calendar loaded. Test with: testHijriDate("2026-05-27")');
 }
+
+    // Hijri date adjustment
+    adjustDate(originalDate, adjustmentDays) {
+        if (adjustmentDays === 0) return originalDate;
+        
+        const adjusted = { ...originalDate };
+        let totalDays = adjusted.day + adjustmentDays;
+        
+        while (totalDays > this.getHijriMonthLength(adjusted.month, adjusted.year)) {
+            totalDays -= this.getHijriMonthLength(adjusted.month, adjusted.year);
+            adjusted.month++;
+            if (adjusted.month > 12) {
+                adjusted.month = 1;
+                adjusted.year++;
+            }
+        }
+        
+        while (totalDays < 1) {
+            adjusted.month--;
+            if (adjusted.month < 1) {
+                adjusted.month = 12;
+                adjusted.year--;
+            }
+            totalDays += this.getHijriMonthLength(adjusted.month, adjusted.year);
+        }
+        
+        adjusted.day = totalDays;
+        adjusted.monthName = this.hijriMonths[adjusted.month - 1];
+        
+        return adjusted;
+    }

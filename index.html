@@ -275,7 +275,7 @@
                 <div id="benDaysGrid" class="days-grid crystal-grid"></div>
             </div>
             
-            <!-- Hijri Calendar -->
+                        <!-- Hijri Calendar -->
             <div id="hijriCalendar" class="calendar-panel glass-card">
                 <div class="calendar-top-bar">
                     <button class="nav-crystal-btn" id="hijPrevMonth">
@@ -292,6 +292,33 @@
                     </button>
                 </div>
                 
+                <!-- Hijri Adjustment Controls -->
+                <div class="hijri-adjustment-panel">
+                    <div class="adjustment-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>হিজরি তারিখ সমন্বয়</span>
+                    </div>
+                    <div class="adjustment-controls">
+                        <button class="adjust-btn decrease-btn" id="hijriDecreaseDay" title="একদিন কমান">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="adjustment-display">
+                            <span id="hijriAdjustmentValue" class="adjustment-value">0</span>
+                            <span class="adjustment-label">দিন</span>
+                        </div>
+                        <button class="adjust-btn increase-btn" id="hijriIncreaseDay" title="একদিন বাড়ান">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="adjust-btn reset-btn" id="hijriResetAdjustment" title="রিসেট">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                    <div class="adjustment-note">
+                        <i class="fas fa-moon"></i>
+                        <span id="hijriAdjustmentNote">চাঁদ দেখার উপর ভিত্তি করে সমন্বয় করুন</span>
+                    </div>
+                </div>
+                
                 <div class="weekday-header hijri-weekdays">
                     <span>আহাদ</span><span>ইছনাইন</span><span>ছুলাছা</span>
                     <span>আরবিআ</span><span>খামিস</span><span>জুমুআ</span><span>সাবত</span>
@@ -299,8 +326,7 @@
                 
                 <div id="hijDaysGrid" class="days-grid crystal-grid"></div>
             </div>
-        </div>
-
+            
                <!-- Event & Holiday Section -->
         <div class="events-section glass-card">
             <div class="section-header">

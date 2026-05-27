@@ -154,14 +154,63 @@ class CalendarManager {
         daysGrid.innerHTML = html;
     }
     
-   renderHijriCalendar(year, month, timezone = null) {
-    const daysGrid = document.getElementById('hijDaysGrid');
-    const monthYearTitle = document.getElementById('hijMonthYear');
-    
-    // Check if elements exist
-    if (!daysGrid || !monthYearTitle) {
-        console.warn('Hijri calendar elements not found in DOM');
-        return;
+      renderHijriCalendar(year, month, timezone = null) {
+        const daysGrid = document.getElementById('hijDaysGrid');
+        const monthYearTitle = document.getElementById('hijMonthYear');
+        
+        if (!daysGrid || !monthYearTitle) {
+            console.warn('Hijri calendar elements not found in DOM');
+            return;
+        }
+        
+        // Get adjusted current date for today's highlight
+        let currentHijriDate;
+        if (window.crystalApp) {
+            currentHijriDate = window.crystalApp.getAdjustedHijriDate();
+        } else {
+            const today = new Date();
+            currentHijriDate = this.hijriCalendar.gregorianToHijri(today);
+        }
+        
+        monthYearTitle.innerHTML = `${this.hijriCalendar.hijriMonths[month - 1]} ${year} হি.`;
+        
+        // Add adjustment badge if needed
+        if (window.crystalApp && window.crystalApp.hijriAdjustment !== 0) {
+            const badge = document.createElement('span');
+            badge.className = 'adjustment-badge';
+            badge.textContent = `${window.crystalApp.hijriAdjustment > 0 ? '+' : ''}${window.crystalApp.hijriAdjustment} দিন`;
+            monthYearTitle.appendChild(badge);
+        }
+        
+        const daysInMonth = this.hijriCalendar.getHijriMonthLength(month, year);
+        
+        let html = '';
+        const firstDayOfMonth = this.getHijriFirstDayOfWeek(year, month);
+        
+        // Add empty cells for start of month
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            html += `<div class="day-cell other-month"><span class="day-number">•</span></div>`;
+        }
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = currentHijriDate.day === day && 
+                           currentHijriDate.month === month &&
+                           currentHijriDate.year === year;
+            
+            let classes = 'day-cell hijri-date';
+            if (isToday) classes += ' today';
+            
+            const importantDate = this.hijriCalendar.isImportantDate(month, day);
+            const tooltip = importantDate ? ` title="${importantDate}"` : '';
+            
+            html += `<div class="${classes}"${tooltip}>
+                <span class="day-number">${day}</span>
+                ${importantDate ? '<span class="important-dot" title="' + importantDate + '">•</span>' : ''}
+                ${isToday ? '<span class="today-dot"></span>' : ''}
+            </div>`;
+        }
+        
+        daysGrid.innerHTML = html;
     }
     
     const today = new Date();

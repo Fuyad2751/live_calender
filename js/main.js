@@ -820,43 +820,14 @@ class CrystalCalendarApp {
         }
     }
     
-    updateAllInfo() {
+        updateAllInfo() {
         try {
             const now = this.getCurrentDateTime();
             
-            // Quick date cards
-            const quickEnglishDate = document.getElementById('quickEnglishDate');
-            const quickEnglishDay = document.getElementById('quickEnglishDay');
+            // ... existing code for English and Bengali ...
             
-            if (quickEnglishDate) {
-                quickEnglishDate.textContent = 
-                    `${now.getDate()} ${this.calendarManager.englishMonths[now.getMonth()]} ${now.getFullYear()}`;
-            }
-            
-            if (quickEnglishDay) {
-                const weekdays = [
-                    'রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার',
-                    'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'
-                ];
-                quickEnglishDay.textContent = weekdays[now.getDay()];
-            }
-            
-            // Bengali info
-            const bengaliDate = this.calendarManager.bengaliCalendar.gregorianToBengali(now);
-            const quickBengaliDate = document.getElementById('quickBengaliDate');
-            const quickBengaliSeason = document.getElementById('quickBengaliSeason');
-            
-            if (quickBengaliDate) {
-                quickBengaliDate.textContent = 
-                    this.calendarManager.bengaliCalendar.formatBengaliDate(bengaliDate);
-            }
-            
-            if (quickBengaliSeason) {
-                quickBengaliSeason.textContent = `ঋতু: ${bengaliDate.season}`;
-            }
-            
-            // Hijri info
-            const hijriDate = this.calendarManager.hijriCalendar.gregorianToHijri(now);
+            // Hijri info - use adjusted date
+            const hijriDate = this.getAdjustedHijriDate();
             const quickHijriDate = document.getElementById('quickHijriDate');
             const quickHijriEvent = document.getElementById('quickHijriEvent');
             
@@ -870,29 +841,14 @@ class CrystalCalendarApp {
                     hijriDate.month, hijriDate.day
                 );
                 quickHijriEvent.textContent = importantEvent || 'সাধারণ দিন';
+                
+                // Add adjustment info if any
+                if (this.hijriAdjustment !== 0) {
+                    quickHijriEvent.textContent += ` (সমন্বিত)`;
+                }
             }
             
-            // Additional events
-            const weekNumber = document.getElementById('weekNumber');
-            const dayOfYear = document.getElementById('dayOfYear');
-            const sunriseTime = document.getElementById('sunriseTime');
-            const sunsetTime = document.getElementById('sunsetTime');
-            
-            if (weekNumber) {
-                weekNumber.textContent = this.getWeekNumber(now);
-            }
-            
-            if (dayOfYear) {
-                dayOfYear.textContent = this.getDayOfYear(now);
-            }
-            
-            // Update sun times if elements exist
-            if (sunriseTime || sunsetTime) {
-                this.updateSunTimes();
-            }
-            
-        } catch (error) {
-            console.error('Error updating info:', error);
+            // ... rest of existing code ...
         }
     }
     
@@ -995,3 +951,182 @@ window.addEventListener('beforeunload', () => {
         window.crystalApp.destroy();
     }
 });
+
+    // Constructor এ যোগ করুন
+    constructor() {
+        // ... existing code ...
+        this.hijriAdjustment = 0; // Hijri date adjustment in days
+        // ... rest of code ...
+    }
+    
+    // init() মেথডের শেষে এই লাইন যোগ করুন
+    init() {
+        // ... existing code ...
+        this.setupHijriAdjustment();
+        // ... rest of code ...
+    }
+    
+    // হিজরি অ্যাডজাস্টমেন্ট সেটআপ
+    setupHijriAdjustment() {
+        const decreaseBtn = document.getElementById('hijriDecreaseDay');
+        const increaseBtn = document.getElementById('hijriIncreaseDay');
+        const resetBtn = document.getElementById('hijriResetAdjustment');
+        const adjustmentValue = document.getElementById('hijriAdjustmentValue');
+        const adjustmentDisplay = document.querySelector('.adjustment-display');
+        const adjustmentNote = document.getElementById('hijriAdjustmentNote');
+        
+        if (!decreaseBtn || !increaseBtn || !resetBtn) return;
+        
+        // Load saved adjustment from localStorage
+        const savedAdjustment = localStorage.getItem('hijriAdjustment');
+        if (savedAdjustment) {
+            this.hijriAdjustment = parseInt(savedAdjustment);
+            this.updateAdjustmentDisplay();
+        }
+        
+        // Decrease button
+        decreaseBtn.addEventListener('click', () => {
+            this.hijriAdjustment--;
+            this.updateAdjustmentDisplay();
+            this.saveHijriAdjustment();
+            this.renderAllCalendars();
+            this.showAdjustmentNotification('কমানো হয়েছে');
+            this.addClickEffect(decreaseBtn);
+        });
+        
+        // Increase button
+        increaseBtn.addEventListener('click', () => {
+            this.hijriAdjustment++;
+            this.updateAdjustmentDisplay();
+            this.saveHijriAdjustment();
+            this.renderAllCalendars();
+            this.showAdjustmentNotification('বাড়ানো হয়েছে');
+            this.addClickEffect(increaseBtn);
+        });
+        
+        // Reset button
+        resetBtn.addEventListener('click', () => {
+            this.hijriAdjustment = 0;
+            this.updateAdjustmentDisplay();
+            this.saveHijriAdjustment();
+            this.renderAllCalendars();
+            this.showAdjustmentNotification('রিসেট হয়েছে');
+            this.addClickEffect(resetBtn);
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'ArrowLeft') {
+                e.preventDefault();
+                this.hijriAdjustment--;
+                this.updateAdjustmentDisplay();
+                this.saveHijriAdjustment();
+                this.renderAllCalendars();
+            } else if (e.ctrlKey && e.key === 'ArrowRight') {
+                e.preventDefault();
+                this.hijriAdjustment++;
+                this.updateAdjustmentDisplay();
+                this.saveHijriAdjustment();
+                this.renderAllCalendars();
+            } else if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                this.hijriAdjustment = 0;
+                this.updateAdjustmentDisplay();
+                this.saveHijriAdjustment();
+                this.renderAllCalendars();
+            }
+        });
+        
+        // Initial update
+        this.updateAdjustmentDisplay();
+    }
+    
+    // অ্যাডজাস্টমেন্ট ডিসপ্লে আপডেট
+    updateAdjustmentDisplay() {
+        const adjustmentValue = document.getElementById('hijriAdjustmentValue');
+        const adjustmentDisplay = document.querySelector('.adjustment-display');
+        const adjustmentNote = document.getElementById('hijriAdjustmentNote');
+        const hijriMonthYear = document.getElementById('hijMonthYear');
+        
+        if (adjustmentValue) {
+            const displayValue = this.hijriAdjustment > 0 ? 
+                `+${this.hijriAdjustment}` : 
+                this.hijriAdjustment.toString();
+            adjustmentValue.textContent = displayValue;
+        }
+        
+        if (adjustmentDisplay) {
+            if (this.hijriAdjustment !== 0) {
+                adjustmentDisplay.classList.add('active-adjustment');
+            } else {
+                adjustmentDisplay.classList.remove('active-adjustment');
+            }
+        }
+        
+        if (adjustmentNote) {
+            if (this.hijriAdjustment !== 0) {
+                adjustmentNote.textContent = `চাঁদ দেখার ভিত্তিতে ${Math.abs(this.hijriAdjustment)} দিন ${this.hijriAdjustment > 0 ? 'বাড়ানো' : 'কমানো'} হয়েছে`;
+            } else {
+                adjustmentNote.textContent = 'চাঁদ দেখার উপর ভিত্তি করে সমন্বয় করুন';
+            }
+        }
+        
+        // Add badge to month-year title
+        if (hijriMonthYear) {
+            // Remove existing badge
+            const existingBadge = hijriMonthYear.querySelector('.adjustment-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            if (this.hijriAdjustment !== 0) {
+                const badge = document.createElement('span');
+                badge.className = 'adjustment-badge';
+                badge.textContent = `${this.hijriAdjustment > 0 ? '+' : ''}${this.hijriAdjustment} দিন`;
+                hijriMonthYear.appendChild(badge);
+            }
+        }
+    }
+    
+    // লোকাল স্টোরেজে সেভ
+    saveHijriAdjustment() {
+        localStorage.setItem('hijriAdjustment', this.hijriAdjustment.toString());
+    }
+    
+    // নোটিফিকেশন দেখান
+    showAdjustmentNotification(message) {
+        // Remove existing notification
+        const existingNotification = document.querySelector('.hijri-adjustment-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = 'hijri-adjustment-notification';
+        notification.innerHTML = `
+            <i class="fas fa-calendar-check"></i>
+            <span>হিজরি তারিখ ${message} (${this.hijriAdjustment > 0 ? '+' : ''}${this.hijriAdjustment} দিন)</span>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    }
+    
+    // getCurrentSunTimes() মেথডের পর এই মেথড যোগ করুন
+    getAdjustedHijriDate() {
+        const now = this.getCurrentDateTime();
+        let hijriDate = this.calendarManager.hijriCalendar.gregorianToHijri(now);
+        
+        // Apply adjustment
+        if (this.hijriAdjustment !== 0) {
+            hijriDate = this.calendarManager.hijriCalendar.adjustDate(hijriDate, this.hijriAdjustment);
+        }
+        
+        return hijriDate;
+    }
